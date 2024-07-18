@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using FilmPreview.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace FilmPreview.Model
 {
@@ -27,6 +28,6 @@ namespace FilmPreview.Model
     {
         public GenreDTO Genre { get; set; }
 
-
+        public List<FilmGenreDTO> FilmGenres { get; set; }
     }
 }

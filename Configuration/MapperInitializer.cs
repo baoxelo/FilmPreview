@@ -9,23 +9,17 @@ namespace FilmPreview.Configuration
         public MapperInitializer() 
         {
             CreateMap<Film, FilmDTO>().ReverseMap();
-            CreateMap<Film, CreateProductDTO>().ReverseMap();
-            CreateMap<Film, UpdateProductDTO>().ReverseMap();
+            CreateMap<Film, CreateFilmDTO>().ReverseMap();
+            CreateMap<Film, UpdateFilmDTO>().ReverseMap();
 
             CreateMap<Genre, GenreDTO>().ReverseMap();
-            CreateMap<Genre, CreateCategoryDTO>().ReverseMap();
-            CreateMap<Genre, UpdateCategoryDTO>().ReverseMap();
+            CreateMap<Genre, CreateGenreDTO>().ReverseMap();
+            CreateMap<Genre, UpdateGenreDTO>().ReverseMap();
 
             CreateMap<Comment, CommentDTO>().ReverseMap();
-            CreateMap<Comment, CreateInvoiceDTO>().ReverseMap();
-            CreateMap<InvoiceItem, InvoiceItemDTO>().ReverseMap();
 
-            CreateMap<UserList, InvoiceItemDTO>().ReverseMap();
-            CreateMap<UserList, CartItemDTO>().ReverseMap();
-            CreateMap<UserList, AddCartDTO>().ReverseMap();
-
-            CreateMap<Income, UserFilmDTO>().ReverseMap();
-            CreateMap<UserFilm, ProductStaticDTO>();
+            CreateMap<UserList, UserListDTO>().ReverseMap();
+            CreateMap<UserFilm, UserFilmDTO>();
 
             CreateMap<ApiUser, RegistryUserDTO>().ReverseMap();
             CreateMap<ApiUser, UserDTO>().ReverseMap();

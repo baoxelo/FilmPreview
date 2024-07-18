@@ -60,6 +60,5 @@ namespace FilmPreview.Model
 
         public IList<string>? Roles { get; set; }
 
-        public IList<InvoiceItemDTO> Cart { get; set; }
     }
 }

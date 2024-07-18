@@ -74,7 +74,7 @@ namespace FilmPreview.Services
             {
                 _user = await _userManager.FindByNameAsync(userDTO.Account);
             }
-            return (_user != null && await _userManager.CheckPasswordAsync(_user, userDTO.Password) && _user.Status == "active");
+            return _user != null && await _userManager.CheckPasswordAsync(_user, userDTO.Password);
         }
     }
 

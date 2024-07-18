@@ -6,6 +6,6 @@ namespace FilmPreview.Model
     {
         public UserDTO ApiUser { get; set; }
 
-        public List<UserFilmDTO> UserFilms { get; set; }
+        public List<FilmDTO> UserFilms { get; set; }
     }
 }

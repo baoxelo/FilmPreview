@@ -67,7 +67,6 @@ namespace FilmPreview.Controllers
                 }
                 else
                 {
-                    user.Status = "banned";
                     await _userManager.UpdateAsync(user);
                     return Accepted(new { message = $"Cấm tài khoản có email {email} thành công" });
                 }
@@ -95,7 +94,6 @@ namespace FilmPreview.Controllers
                 }
                 else
                 {
-                    user.Status = "active";
                     await _userManager.UpdateAsync(user);
                     return Accepted(new { message = $"Khôi phục tài khoản có email {email} thành công" });
                 }
@@ -107,98 +105,5 @@ namespace FilmPreview.Controllers
             }
         }
 
-        [Authorize(Roles = "administrator")]
-        [HttpGet]
-        [Route("GetInvoices")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetInvoicesAdmin()
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            try
-            {
-                var invoices = await _dbContext.Invoices.ToListAsync();
-                foreach (var invoice in invoices)
-                {
-                    invoice.Items = await _dbContext.InvoiceItems.Where(q => q.InvoiceId == invoice.Id).ToListAsync();
-                }
-                var invoicesDTO = _mapper.Map<IList<CommentDTO>>(invoices);
-
-                //Get the product info
-                foreach (var invoiceDTO in invoicesDTO)
-                {
-                    foreach (var item in invoiceDTO.Items)
-                    {
-                        var productItem = await _dbContext.Products.FirstOrDefaultAsync(q => q.Id == item.ProductId);
-                        item.UnitPrice = productItem.Cost;
-                        item.Image = productItem.Image;
-                        item.Name = productItem.Name;
-                    }
-                }
-
-                return Ok(invoicesDTO);
-            }
-            catch (Exception ex)
-            {
-
-                _logger.LogError(ex, $"Something went wrong in the {nameof(GetInvoicesAdmin)}");
-
-                return StatusCode(500, $"{ex}");
-            }
-        }
-
-        [Authorize(Roles = "administrator")]
-        [HttpGet]
-        [Route("CompleteInvoice/{id:int}")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CompleteInvoice(int id)
-        {
-            try
-            {
-                var invoice = await _unitOfWork.Invoices.Get(q => q.Id == id);
-                if (invoice == null)
-                {
-                    return BadRequest();
-                }
-                invoice.Status = "Đã giao";
-                await _unitOfWork.Save();
-                return Accepted();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(CompleteInvoice)}");
-                return StatusCode(500, "Internal Server Error. Please try again later.");
-            }
-        }
-
-        [Authorize(Roles = "administrator")]
-        [HttpGet]
-        [Route("CancelInvoice/{id:int}")]
-        [ProducesResponseType(StatusCodes.Status202Accepted)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CancelInvoice(int id)
-        {
-            try
-            {
-                var invoice = await _unitOfWork.Invoices.Get(q => q.Id == id);
-                if (invoice == null)
-                {
-                    return BadRequest();
-                }
-                await _unitOfWork.Invoices.Delete(invoice.Id);
-                await _unitOfWork.Save();
-                return Accepted();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Something went wrong in the {nameof(CancelInvoice)}");
-                return StatusCode(500, "Internal Server Error. Please try again later.");
-            }
-        }
     }
 }
